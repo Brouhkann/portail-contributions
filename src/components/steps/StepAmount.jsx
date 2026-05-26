@@ -109,27 +109,27 @@ export default function StepAmount({ formData, update, go }) {
         <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: '#155049' }}>
           Moyen de paiement
         </p>
-        <div className="space-y-2.5">
+        <div className="grid grid-cols-3 gap-2.5">
           {METHODS.map(m => {
             const sel = method === m.id
             return (
               <button key={m.id}
                 onClick={() => { setMethod(m.id); update({ paymentMethod: m.id }); setError('') }}
-                className="w-full p-3.5 rounded-xl flex items-center gap-3 transition-all active:scale-[0.98]"
+                className="flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all active:scale-95"
                 style={{
-                  background:  sel ? m.bg : '#f8fffe',
-                  border:      sel ? `2px solid ${m.border}` : '1.5px solid #d1e9e4',
-                  boxShadow:   sel ? `0 4px 12px ${m.border}55` : 'none',
+                  background: sel ? m.bg : '#f8fffe',
+                  border:     sel ? `2px solid ${m.border}` : '1.5px solid #d1e9e4',
+                  boxShadow:  sel ? `0 4px 12px ${m.border}55` : 'none',
                 }}>
-                <div className="w-11 h-11 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
                   style={{ background: '#ffffff', border: `1.5px solid ${sel ? m.border : '#d1e9e4'}` }}>
                   {m.emoji}
                 </div>
-                <span className="font-bold text-sm flex-1 text-left" style={{ color: sel ? m.text : '#0a2d28' }}>
+                <span className="font-bold text-xs text-center leading-tight" style={{ color: sel ? m.text : '#0a2d28' }}>
                   {m.name}
                 </span>
                 {sel && (
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs flex-shrink-0"
+                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs"
                     style={{ background: m.text }}>✓</span>
                 )}
               </button>
