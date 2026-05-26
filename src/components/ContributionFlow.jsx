@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { loadUser, saveUser } from '@/lib/storage'
+import { loadUser, saveUser, clearUser } from '@/lib/storage'
 import { supabase } from '@/lib/supabase'
 import StepWelcome from './steps/StepWelcome'
 import StepType from './steps/StepType'
@@ -42,9 +42,10 @@ export default function ContributionFlow() {
 
   useEffect(() => {
     const saved = loadUser()
-    if (saved) {
+    if (saved && (saved.name || saved.phone)) {
       setFormData(prev => ({ ...prev, name: saved.name || '', phone: saved.phone || '' }))
       setIsReturning(true)
+      setStep('type') // Identification automatique : skip directement à l'étape 2
     }
   }, [])
 
@@ -59,7 +60,15 @@ export default function ContributionFlow() {
   function handleIdentified(name, phone, rememberMe, anonymous) {
     update({ name, phone, rememberMe, isAnonymous: anonymous })
     if (rememberMe && (name || phone)) saveUser(name, phone)
+    if (!anonymous) setIsReturning(true)
     go('type')
+  }
+
+  function changeUser() {
+    clearUser()
+    setFormData(initialForm)
+    setIsReturning(false)
+    go('welcome')
   }
 
   async function submit(proofImageUrl) {
@@ -85,12 +94,13 @@ export default function ContributionFlow() {
 
   function reset() {
     setFormData({ ...initialForm, name: formData.name, phone: formData.phone, rememberMe: formData.rememberMe })
-    go('welcome')
+    // Si l'utilisateur est identifié, repasser directement à l'étape type
+    go(isReturning && formData.name ? 'type' : 'welcome')
   }
 
   const stepIndex = ORDERED_STEPS.indexOf(step)
   const progressPct = step === 'success' ? 100 : Math.round((stepIndex / (ORDERED_STEPS.length - 2)) * 100)
-  const commonProps = { formData, update, go, submit, submitting, isReturning, handleIdentified }
+  const commonProps = { formData, update, go, submit, submitting, isReturning, handleIdentified, changeUser }
 
   const STEPS = {
     welcome: <StepWelcome {...commonProps} />,
@@ -124,9 +134,24 @@ export default function ContributionFlow() {
               </p>
             </div>
           </div>
-          {step !== 'success' && stepIndex > 0 && (
-            <span className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.5)' }}>{progressPct}%</span>
-          )}
+          <div className="flex flex-col items-end">
+            {formData.name && !formData.isAnonymous && step !== 'welcome' && step !== 'success' ? (
+              <>
+                <span className="text-xs font-semibold" style={{ color: '#e8c84a' }}>
+                  {formData.name.split(' ')[0]}
+                </span>
+                <button onClick={changeUser}
+                  className="text-xs mt-0.5 transition-opacity hover:opacity-80"
+                  style={{ color: 'rgba(201,162,39,0.45)', fontSize: '0.6rem', letterSpacing: '0.05em' }}>
+                  Changer
+                </button>
+              </>
+            ) : (
+              step !== 'success' && stepIndex > 0 && (
+                <span className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.5)' }}>{progressPct}%</span>
+              )
+            )}
+          </div>
         </div>
 
         {/* Barre de progression */}
