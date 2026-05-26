@@ -9,32 +9,22 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0a2d28;
+  background-color: #edf7f4;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
 input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='number'] { -moz-appearance: textfield; }
 
-input[type='number'] {
-  -moz-appearance: textfield;
-}
+.font-cinzel { font-family: 'Cinzel', serif; }
 
-.font-cinzel {
-  font-family: 'Cinzel', serif;
-}
-
-/* Gold shimmer button effect */
+/* Bouton or */
 .btn-gold {
   background: linear-gradient(135deg, #e8c84a 0%, #c9a227 60%, #a07c1e 100%);
   color: #0a2d28;
@@ -44,63 +34,38 @@ input[type='number'] {
   position: relative;
   overflow: hidden;
 }
-
 .btn-gold::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -75%;
-  width: 50%;
-  height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  top: -50%; left: -75%;
+  width: 50%; height: 200%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
   transform: skewX(-20deg);
   transition: left 0.6s ease;
 }
+.btn-gold:hover::after { left: 125%; }
+.btn-gold:active { transform: scale(0.97); }
 
-.btn-gold:hover::after {
-  left: 125%;
-}
-
-.btn-gold:active {
-  transform: scale(0.97);
-}
-
-/* Dark teal input */
+/* Input clair */
 .input-church {
-  background: rgba(15, 61, 55, 0.8);
-  border: 1px solid rgba(201, 162, 39, 0.25);
-  color: white;
+  background: #ffffff;
+  border: 1.5px solid #d1e9e4;
+  color: #0a2d28;
   transition: all 0.2s ease;
 }
-
-.input-church::placeholder {
-  color: rgba(201, 162, 39, 0.35);
-}
-
+.input-church::placeholder { color: #9dc4bc; }
 .input-church:focus {
   outline: none;
-  border-color: rgba(201, 162, 39, 0.7);
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
-  background: rgba(21, 80, 73, 0.9);
+  border-color: #c9a227;
+  box-shadow: 0 0 0 3px rgba(201,162,39,0.12);
 }
 
-/* Gold divider */
+/* Séparateur or */
 .divider-gold {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201,162,39,0.35), transparent);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #0a2d28;
-}
-::-webkit-scrollbar-thumb {
-  background: rgba(201, 162, 39, 0.3);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(201, 162, 39, 0.5);
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #edf7f4; }
+::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.3); border-radius: 3px; }

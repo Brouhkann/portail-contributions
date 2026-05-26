@@ -13,19 +13,17 @@ import StepUpload from './steps/StepUpload'
 import StepSuccess from './steps/StepSuccess'
 
 const ORDERED_STEPS = ['welcome', 'type', 'amount', 'payment', 'paying', 'confirm', 'upload', 'success']
-
 const initialForm = {
   name: '', phone: '', rememberMe: true, isAnonymous: false,
   contributionType: '', amount: '', paymentMethod: '',
 }
 
-/* Icône flamme SVG inline — reprend le motif du logo */
-function FlameIcon({ size = 28 }) {
+function FlameIcon({ size = 26 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 28" fill="none">
-      <path d="M12 2C12 2 8 7 8 12c0 2 1 3.5 2 4.5C9.5 15 9 13.5 9 12c0-1.5.5-3 1.5-4C10 10 10 12 11 13.5c.5.8 1 1.5 1 2.5a3 3 0 01-3 3 5 5 0 005 5 5 5 0 005-5c0-3-2-5-3-7-1-2-1-4 0-6-1 1-2 3-2 5 0 1 .5 2 1 2.5C16 12 16 10 15 8c-1-2-3-6-3-6z" fill="url(#flameGrad)" />
+      <path d="M12 2C12 2 8 7 8 12c0 2 1 3.5 2 4.5C9.5 15 9 13.5 9 12c0-1.5.5-3 1.5-4C10 10 10 12 11 13.5c.5.8 1 1.5 1 2.5a3 3 0 01-3 3 5 5 0 005 5 5 5 0 005-5c0-3-2-5-3-7-1-2-1-4 0-6-1 1-2 3-2 5 0 1 .5 2 1 2.5C16 12 16 10 15 8c-1-2-3-6-3-6z" fill="url(#fg)" />
       <defs>
-        <linearGradient id="flameGrad" x1="12" y1="2" x2="12" y2="27" gradientUnits="userSpaceOnUse">
+        <linearGradient id="fg" x1="12" y1="2" x2="12" y2="27" gradientUnits="userSpaceOnUse">
           <stop stopColor="#f5e098" />
           <stop offset="0.5" stopColor="#c9a227" />
           <stop offset="1" stopColor="#a07c1e" />
@@ -65,8 +63,7 @@ export default function ContributionFlow() {
   }
 
   async function submit(proofImageUrl) {
-    setSubmitting(true)
-    setSubmitError(null)
+    setSubmitting(true); setSubmitError(null)
     try {
       const { error } = await supabase.from('contributions').insert({
         contributor_name: formData.isAnonymous ? null : (formData.name || null),
@@ -81,9 +78,7 @@ export default function ContributionFlow() {
       go('success')
     } catch (err) {
       setSubmitError(err.message || 'Erreur lors de l\'enregistrement.')
-    } finally {
-      setSubmitting(false)
-    }
+    } finally { setSubmitting(false) }
   }
 
   function reset() {
@@ -93,8 +88,8 @@ export default function ContributionFlow() {
 
   const stepIndex = ORDERED_STEPS.indexOf(step)
   const progressPct = step === 'success' ? 100 : Math.round((stepIndex / (ORDERED_STEPS.length - 2)) * 100)
-
   const commonProps = { formData, update, go, submit, submitting, isReturning, handleIdentified }
+
   const STEPS = {
     welcome: <StepWelcome {...commonProps} />,
     type: <StepType {...commonProps} />,
@@ -107,72 +102,59 @@ export default function ContributionFlow() {
   }
 
   return (
-    <div className="min-h-screen bg-church-gradient flex flex-col items-center pt-6 px-4 pb-12">
-      {/* Particules décoratives */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-gold-500/5 blur-3xl" />
-        <div className="absolute bottom-32 right-8 w-48 h-48 rounded-full bg-gold-500/4 blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-church-700/20 blur-3xl" />
-      </div>
+    <div className="min-h-screen flex flex-col items-center pb-12" style={{ background: 'linear-gradient(160deg, #edf7f4 0%, #f5f9f8 60%, #fffef8 100%)' }}>
 
-      <div className="w-full max-w-md relative z-10">
-        {/* En-tête église */}
-        <div className="flex items-center justify-between mb-5 px-1">
+      {/* Bandeau header teal foncé */}
+      <div className="w-full px-4 py-4 mb-6" style={{ background: 'linear-gradient(135deg, #0a2d28, #155049)' }}>
+        <div className="max-w-md mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="w-11 h-11 rounded-full bg-church-800 border border-gold-600/40 flex items-center justify-center shadow-gold-sm">
-                <FlameIcon size={22} />
-              </div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(201,162,39,0.15)', border: '1.5px solid rgba(201,162,39,0.5)' }}>
+              <FlameIcon size={20} />
             </div>
             <div>
-              <p className="font-cinzel text-gold-400 font-semibold text-sm tracking-[0.15em] uppercase leading-tight">
+              <p className="font-cinzel text-gold-400 font-semibold text-sm tracking-[0.12em] uppercase leading-tight"
+                style={{ color: '#e8c84a' }}>
                 Vases d'Honneur
               </p>
-              <p className="text-gold-700 text-xs tracking-[0.1em] italic">Foi Inébranlable</p>
+              <p className="text-xs italic" style={{ color: 'rgba(201,162,39,0.55)', letterSpacing: '0.06em' }}>
+                Foi Inébranlable
+              </p>
             </div>
           </div>
           {step !== 'success' && stepIndex > 0 && (
-            <span className="text-gold-700 text-xs font-medium">{progressPct}%</span>
+            <span className="text-xs font-medium" style={{ color: 'rgba(201,162,39,0.5)' }}>{progressPct}%</span>
           )}
         </div>
 
-        {/* Barre de progression dorée */}
+        {/* Barre de progression */}
         {step !== 'success' && (
-          <div className="mb-5 h-0.5 bg-church-700/50 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-700 ease-out"
-              style={{
-                width: `${Math.max(progressPct, 3)}%`,
-                background: 'linear-gradient(90deg, #c9a227, #e8c84a)',
-                boxShadow: '0 0 8px rgba(201,162,39,0.6)',
-              }}
-            />
+          <div className="max-w-md mx-auto mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+            <div className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${Math.max(progressPct, 3)}%`, background: 'linear-gradient(90deg, #c9a227, #e8c84a)', boxShadow: '0 0 6px rgba(201,162,39,0.7)' }} />
           </div>
         )}
+      </div>
 
-        {/* Erreur globale */}
+      {/* Carte principale — fond blanc */}
+      <div className="w-full max-w-md px-4">
         {submitError && (
-          <div className="mb-4 bg-crimson/10 border border-crimson/30 rounded-xl p-3 text-sm text-red-300 flex gap-2">
+          <div className="mb-4 rounded-xl p-3 text-sm flex gap-2"
+            style={{ background: '#fef2f2', border: '1px solid #fca5a5', color: '#b91c1c' }}>
             <span>⚠️</span><span>{submitError}</span>
           </div>
         )}
 
-        {/* Carte principale */}
-        <div
-          className="rounded-2xl overflow-hidden shadow-church"
-          style={{
-            background: 'linear-gradient(160deg, #0f3d37 0%, #0a2d28 100%)',
-            border: '1px solid rgba(201,162,39,0.18)',
-            boxShadow: '0 20px 60px rgba(4,15,14,0.7), inset 0 1px 0 rgba(201,162,39,0.1)',
-          }}
-        >
+        <div className="rounded-2xl overflow-hidden"
+          style={{ background: '#ffffff', boxShadow: '0 4px 24px rgba(10,45,40,0.1), 0 1px 4px rgba(10,45,40,0.06)', border: '1px solid rgba(201,162,39,0.15)' }}>
           {STEPS[step]}
         </div>
 
-        {/* Lien admin discret */}
         {step === 'welcome' && (
-          <div className="text-center mt-6">
-            <a href="/admin" className="text-gold-800 hover:text-gold-600 text-xs transition-colors tracking-widest uppercase">
+          <div className="text-center mt-5">
+            <a href="/admin" className="text-xs transition-colors" style={{ color: '#9dc4bc', letterSpacing: '0.1em' }}
+              onMouseEnter={e => e.target.style.color = '#155049'}
+              onMouseLeave={e => e.target.style.color = '#9dc4bc'}>
               Administration
             </a>
           </div>
