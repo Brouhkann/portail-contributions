@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const TYPES = [
   { label: 'Dîme',    icon: '💰', desc: 'Apporter ma dîme maintenant' },
   { label: 'Offrande', icon: '🙏', desc: 'Faire mon offrande maintenant' },
-  { label: 'Semence',  icon: '🌱', desc: 'Faire une semence', needsDetail: true },
+  { label: 'Semence',  icon: '🌱', desc: 'Semer', needsDetail: true },
 ]
 
 export default function StepType({ formData, update, go }) {
