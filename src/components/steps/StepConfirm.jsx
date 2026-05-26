@@ -8,7 +8,7 @@ export default function StepConfirm({ formData, go }) {
   const displayName = formData.isAnonymous ? 'Anonyme' : (formData.name || 'Non renseigné')
   const rows = [
     { label: 'Contributeur', value: displayName },
-    { label: 'Type', value: formData.contributionType },
+    { label: 'Type', value: formData.contributionDetail ? `${formData.contributionType} — ${formData.contributionDetail}` : formData.contributionType },
     { label: 'Montant', value: `${parseInt(formData.amount,10).toLocaleString('fr-FR')} FCFA`, big: true },
     { label: 'Via', value: METHOD_LABELS[formData.paymentMethod] || formData.paymentMethod },
   ]

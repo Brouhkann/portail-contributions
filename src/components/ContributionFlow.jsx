@@ -15,7 +15,7 @@ import StepSuccess from './steps/StepSuccess'
 const ORDERED_STEPS = ['welcome', 'type', 'amount', 'payment', 'paying', 'confirm', 'upload', 'success']
 const initialForm = {
   name: '', phone: '', rememberMe: true, isAnonymous: false,
-  contributionType: '', amount: '', paymentMethod: '',
+  contributionType: '', contributionDetail: '', amount: '', paymentMethod: '',
 }
 
 function FlameIcon({ size = 26 }) {
@@ -68,7 +68,9 @@ export default function ContributionFlow() {
       const { error } = await supabase.from('contributions').insert({
         contributor_name: formData.isAnonymous ? null : (formData.name || null),
         contributor_phone: formData.isAnonymous ? null : (formData.phone || null),
-        type_label: formData.contributionType,
+        type_label: formData.contributionDetail
+          ? `${formData.contributionType} — ${formData.contributionDetail}`
+          : formData.contributionType,
         amount: parseInt(formData.amount, 10),
         payment_method: formData.paymentMethod,
         proof_image_url: proofImageUrl || null,
