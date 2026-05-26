@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const TYPES = [
-  { label: 'Dîme',    icon: '💰', desc: 'Dîme du mois' },
-  { label: 'Offrande', icon: '🙏', desc: 'Offrande du culte' },
-  { label: 'Semence',  icon: '🌱', desc: 'Précisez le sujet', needsDetail: true },
+  { label: 'Dîme',    icon: '💰', desc: 'Apporter ma dîme maintenant' },
+  { label: 'Offrande', icon: '🙏', desc: 'Faire mon offrande maintenant' },
+  { label: 'Semence',  icon: '🌱', desc: 'Faire une semence', needsDetail: true },
 ]
 
 export default function StepType({ formData, update, go }) {
