@@ -1,34 +1,85 @@
 'use client'
 
-import { AlertTriangle, CheckCircle2, ChevronLeft } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { AlertTriangle, CheckCircle2, ChevronLeft, Camera, X, Loader2 } from 'lucide-react'
 
 const METHOD_LABELS = { wave: 'Wave', mtn: 'MTN Mobile Money', orange: 'Orange Money' }
+const MAX_SIZE = 5 * 1024 * 1024
+const ACCEPTED = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']
 
-export default function StepConfirm({ formData, go }) {
+export default function StepConfirm({ formData, go, submit, submitting }) {
+  const [preview, setPreview]       = useState(null)
+  const [file, setFile]             = useState(null)
+  const [uploading, setUploading]   = useState(false)
+  const [uploadError, setUploadError] = useState('')
+  const fileRef = useRef()
+
   const displayName = formData.isAnonymous ? 'Anonyme' : (formData.name || 'Non renseigné')
+  const typeLabel   = formData.contributionDetail
+    ? `${formData.contributionType} — ${formData.contributionDetail}`
+    : formData.contributionType
+
   const rows = [
     { label: 'Contributeur', value: displayName },
-    { label: 'Type', value: formData.contributionDetail ? `${formData.contributionType} — ${formData.contributionDetail}` : formData.contributionType },
-    { label: 'Montant', value: `${parseInt(formData.amount,10).toLocaleString('fr-FR')} FCFA`, big: true },
-    { label: 'Via', value: METHOD_LABELS[formData.paymentMethod] || formData.paymentMethod },
+    { label: 'Type',         value: typeLabel },
+    { label: 'Montant',      value: `${parseInt(formData.amount, 10).toLocaleString('fr-FR')} FCFA`, big: true },
+    { label: 'Via',          value: METHOD_LABELS[formData.paymentMethod] || formData.paymentMethod },
   ]
+
+  function handleFileSelect(e) {
+    const f = e.target.files?.[0]; if (!f) return
+    setUploadError('')
+    if (!ACCEPTED.includes(f.type)) { setUploadError('Format non supporté (JPG, PNG, WebP)'); return }
+    if (f.size > MAX_SIZE)          { setUploadError('Fichier trop lourd (max 5 Mo)'); return }
+    setFile(f)
+    const reader = new FileReader()
+    reader.onload = ev => setPreview(ev.target.result)
+    reader.readAsDataURL(f)
+  }
+
+  function removeImage() {
+    setFile(null); setPreview(null); setUploadError('')
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  async function handleSubmit() {
+    if (!file) { await submit(null); return }
+    setUploading(true); setUploadError('')
+    try {
+      const fd = new FormData(); fd.append('file', file)
+      const res  = await fetch('/api/upload', { method: 'POST', body: fd })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error || 'Erreur upload')
+      await submit(json.url)
+    } catch {
+      setUploadError('Échec de l\'upload. La contribution sera enregistrée sans preuve.')
+      await submit(null)
+    } finally { setUploading(false) }
+  }
+
+  const isLoading = submitting || uploading
 
   return (
     <div className="p-6">
-      <div className="flex flex-col items-center mb-6">
-        <div className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
-          style={{ background: '#edf7f4', border: '2px solid rgba(201,162,39,0.4)' }}>
-          <CheckCircle2 className="w-7 h-7" style={{ color: '#c9a227' }} />
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-5">
+        <button onClick={() => go('amount')}
+          className="w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: '#edf7f4', color: '#155049' }}>
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <div>
+          <h2 className="font-cinzel font-semibold tracking-wide text-base uppercase" style={{ color: '#0a2d28' }}>
+            Confirmation
+          </h2>
+          <p className="text-xs mt-0.5" style={{ color: '#6b9e96' }}>Vérifiez et validez votre contribution</p>
         </div>
-        <h2 className="font-cinzel font-semibold tracking-wide text-base uppercase text-center" style={{ color: '#0a2d28' }}>
-          Confirmer le paiement
-        </h2>
-        <p className="text-xs mt-1 text-center" style={{ color: '#6b9e96' }}>Vérifiez les détails avant de valider</p>
-        <div className="divider-gold w-24 mt-3" />
       </div>
 
+      <div className="divider-gold mb-5" />
+
       {/* Récapitulatif */}
-      <div className="rounded-xl mb-5 overflow-hidden" style={{ border: '1.5px solid #d1e9e4' }}>
+      <div className="rounded-xl mb-4 overflow-hidden" style={{ border: '1.5px solid #d1e9e4' }}>
         {rows.map(({ label, value, big }, i) => (
           <div key={label} className="flex justify-between items-center px-4 py-3"
             style={{ borderBottom: i < rows.length - 1 ? '1px solid #edf7f4' : 'none', background: i % 2 === 0 ? '#f8fffe' : '#ffffff' }}>
@@ -40,23 +91,50 @@ export default function StepConfirm({ formData, go }) {
       </div>
 
       {/* Avertissement */}
-      <div className="rounded-xl p-3 mb-6 flex gap-2.5"
+      <div className="rounded-xl p-3 mb-5 flex gap-2.5"
         style={{ background: '#fffbeb', border: '1px solid #fde68a' }}>
-        <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#d97706' }} />
+        <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#d97706' }} />
         <p className="text-xs leading-relaxed" style={{ color: '#92400e' }}>
-          En confirmant, vous attestez avoir effectué ce paiement. Aucune contribution n'est enregistrée sans votre confirmation.
+          En confirmant, vous attestez avoir effectué ce paiement.
         </p>
       </div>
 
-      <button onClick={() => go('upload')}
-        className="btn-gold w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-md">
-        <CheckCircle2 className="w-5 h-5" /> Je confirme avoir payé
-      </button>
+      {/* Upload preuve */}
+      <div className="mb-5">
+        <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#155049' }}>
+          Preuve de paiement <span className="normal-case tracking-normal font-normal" style={{ color: '#9dc4bc' }}>(optionnelle)</span>
+        </p>
 
-      <button onClick={() => go('paying')}
-        className="w-full mt-3 py-3 text-sm flex items-center justify-center gap-1 transition-colors"
-        style={{ color: '#9dc4bc' }}>
-        <ChevronLeft className="w-4 h-4" /> Retour au paiement
+        {!preview ? (
+          <button type="button" onClick={() => fileRef.current?.click()}
+            className="w-full rounded-xl py-5 flex flex-col items-center gap-2 transition-all"
+            style={{ border: '2px dashed #d1e9e4', background: '#f8fffe' }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = '#c9a227'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = '#d1e9e4'}>
+            <Camera className="w-8 h-8" style={{ color: '#b8dbd5' }} />
+            <span className="text-sm" style={{ color: '#6b9e96' }}>Joindre une capture d'écran</span>
+            <span className="text-xs" style={{ color: '#9dc4bc' }}>JPG, PNG, WebP — max 5 Mo</span>
+          </button>
+        ) : (
+          <div className="relative rounded-xl overflow-hidden" style={{ border: '1.5px solid #d1e9e4' }}>
+            <img src={preview} alt="Preuve" className="w-full max-h-48 object-contain bg-gray-50" />
+            <button onClick={removeImage}
+              className="absolute top-2 right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow">
+              <X className="w-4 h-4 text-white" />
+            </button>
+          </div>
+        )}
+
+        <input ref={fileRef} type="file" accept={ACCEPTED.join(',')} onChange={handleFileSelect} className="hidden" />
+        {uploadError && <p className="text-red-500 text-xs mt-2 text-center">{uploadError}</p>}
+      </div>
+
+      {/* Bouton confirmer */}
+      <button onClick={handleSubmit} disabled={isLoading}
+        className="btn-gold w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-md disabled:opacity-50">
+        {isLoading
+          ? <><Loader2 className="w-5 h-5 animate-spin" /> Enregistrement…</>
+          : <><CheckCircle2 className="w-5 h-5" /> Je confirme avoir payé</>}
       </button>
     </div>
   )
