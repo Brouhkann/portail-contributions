@@ -32,7 +32,6 @@ export default function StepType({ formData, update, go }) {
   }
 
   function handleConfirmSemence() {
-    if (!detail.trim()) { setError('Veuillez préciser le sujet de votre semence.'); return }
     update({ contributionType: 'Semence', contributionDetail: detail.trim() })
     go('amount')
   }
@@ -91,17 +90,16 @@ export default function StepType({ formData, update, go }) {
         <div className="rounded-xl p-4 mb-4"
           style={{ background: 'linear-gradient(135deg,#fdf8e8,#fffdf5)', border: '1.5px solid rgba(201,162,39,0.35)' }}>
           <label className="block text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#7a5c14' }}>
-            Sujet de la semence
+            Sujet de la semence <span className="normal-case tracking-normal font-normal" style={{ color: '#a07c1e' }}>(optionnel)</span>
           </label>
           <input
             type="text"
             value={detail}
-            onChange={e => { setDetail(e.target.value); setError(''); update({ contributionDetail: e.target.value }) }}
+            onChange={e => { setDetail(e.target.value); update({ contributionDetail: e.target.value }) }}
             placeholder="Ex : Construction, Guérison, Bénédiction…"
             autoFocus
             className="w-full px-4 py-3 rounded-xl input-church text-sm"
           />
-          {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
 
           <button onClick={handleConfirmSemence}
             className="btn-gold w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-md mt-3">
