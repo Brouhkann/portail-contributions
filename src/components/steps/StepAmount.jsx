@@ -6,9 +6,9 @@ import { ChevronLeft } from 'lucide-react'
 const QUICK_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000]
 
 const METHODS = [
-  { id: 'wave',   name: 'Wave',             emoji: '🌊', bg: '#eff8ff', border: '#93c5fd', text: '#1d4ed8' },
-  { id: 'mtn',    name: 'MTN Mobile Money', emoji: '📱', bg: '#fefce8', border: '#fde047', text: '#854d0e' },
-  { id: 'orange', name: 'Orange Money',     emoji: '🍊', bg: '#fff7ed', border: '#fdba74', text: '#c2410c' },
+  { id: 'wave',   name: 'Wave',             logo: '/logos/wave.png',   bg: '#e0f7fa', border: '#00bcd4', text: '#006064' },
+  { id: 'mtn',    name: 'MTN Mobile Money', logo: '/logos/mtn.png',    bg: '#e8f0fe', border: '#1a73e8', text: '#1a3a5c' },
+  { id: 'orange', name: 'Orange Money',     logo: '/logos/orange.png', bg: '#fff3e0', border: '#ff6d00', text: '#bf360c' },
 ]
 
 function triggerPayment(methodId, amount) {
@@ -136,9 +136,9 @@ export default function StepAmount({ formData, update, go }) {
               onClick={() => handleSelectMethod(m.id)}
               className="flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all active:scale-95"
               style={{ background: m.bg, border: `1.5px solid ${m.border}` }}>
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+              <div className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center"
                 style={{ background: '#ffffff', border: `1.5px solid ${m.border}` }}>
-                {m.emoji}
+                <img src={m.logo} alt={m.name} className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-xs text-center leading-tight" style={{ color: m.text }}>
                 {m.name}
