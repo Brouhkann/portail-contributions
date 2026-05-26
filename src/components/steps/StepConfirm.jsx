@@ -107,20 +107,23 @@ export default function StepConfirm({ formData, go, submit, submitting }) {
 
         {!preview ? (
           <button type="button" onClick={() => fileRef.current?.click()}
-            className="w-full rounded-xl py-5 flex flex-col items-center gap-2 transition-all"
+            className="rounded-xl py-3 px-4 flex items-center gap-3 transition-all"
             style={{ border: '2px dashed #d1e9e4', background: '#f8fffe' }}
             onMouseEnter={e => e.currentTarget.style.borderColor = '#c9a227'}
             onMouseLeave={e => e.currentTarget.style.borderColor = '#d1e9e4'}>
-            <Camera className="w-8 h-8" style={{ color: '#b8dbd5' }} />
-            <span className="text-sm" style={{ color: '#6b9e96' }}>Joindre une capture d'écran</span>
-            <span className="text-xs" style={{ color: '#9dc4bc' }}>JPG, PNG, WebP — max 5 Mo</span>
+            <Camera className="w-5 h-5 flex-shrink-0" style={{ color: '#b8dbd5' }} />
+            <div className="text-left">
+              <span className="text-sm block" style={{ color: '#6b9e96' }}>Joindre une capture d'écran</span>
+              <span className="text-xs" style={{ color: '#9dc4bc' }}>JPG, PNG, WebP — max 5 Mo</span>
+            </div>
           </button>
         ) : (
-          <div className="relative rounded-xl overflow-hidden" style={{ border: '1.5px solid #d1e9e4' }}>
-            <img src={preview} alt="Preuve" className="w-full max-h-48 object-contain bg-gray-50" />
+          <div className="relative rounded-xl overflow-hidden w-28 h-28"
+            style={{ border: '1.5px solid #d1e9e4' }}>
+            <img src={preview} alt="Preuve" className="w-full h-full object-cover bg-gray-50" />
             <button onClick={removeImage}
-              className="absolute top-2 right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center shadow">
-              <X className="w-4 h-4 text-white" />
+              className="absolute top-1 right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow">
+              <X className="w-3 h-3 text-white" />
             </button>
           </div>
         )}

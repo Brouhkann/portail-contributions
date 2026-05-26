@@ -1,6 +1,6 @@
 'use client'
 
-import { Plus } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 
 const METHOD_LABELS = { wave: 'Wave', mtn: 'MTN Mobile Money', orange: 'Orange Money' }
 
@@ -58,7 +58,7 @@ export default function StepSuccess({ formData, reset }) {
 
       <button onClick={reset}
         className="btn-gold w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 shadow-md">
-        <Plus className="w-5 h-5" /> Nouvelle contribution
+        <ChevronLeft className="w-5 h-5" /> Retour
       </button>
     </div>
   )
