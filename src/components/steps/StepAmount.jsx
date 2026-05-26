@@ -13,20 +13,20 @@ const METHODS = [
 
 function triggerPayment(methodId, amount) {
   const amt = parseInt(amount, 10)
-  const links = {
-    wave:   `https://pay.wave.com/m/M_ci_w0uiv5NMBefY/c/ci/?amount=${amt}`,
-    mtn:    `tel:*133%23`,
-    orange: `tel:%23144*11*0749269369%23`,
+  if (methodId === 'wave') {
+    // Wave : ouvre le lien de paiement avec le montant injecté
+    window.open(
+      `https://pay.wave.com/m/M_ci_w0uiv5NMBefY/c/ci/?amount=${amt}`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+  } else if (methodId === 'mtn') {
+    // MTN : compose le code USSD directement
+    window.location.href = 'tel:*133%23'
+  } else if (methodId === 'orange') {
+    // Orange : compose le code USSD directement
+    window.location.href = 'tel:%23144*11*0749269369%23'
   }
-  const href = links[methodId]
-  if (!href) return
-  const a = document.createElement('a')
-  a.href = href
-  if (methodId === 'wave') a.target = '_blank'
-  a.rel = 'noopener noreferrer'
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
 }
 
 export default function StepAmount({ formData, update, go }) {
@@ -52,7 +52,8 @@ export default function StepAmount({ formData, update, go }) {
     setMethod(methodId)
     update({ amount, paymentMethod: methodId })
     triggerPayment(methodId, amount)
-    go('confirm')
+    // Léger délai pour laisser le téléphone traiter l'ouverture avant de changer d'écran
+    setTimeout(() => go('confirm'), 400)
   }
 
   const numVal      = parseInt(amount, 10)
