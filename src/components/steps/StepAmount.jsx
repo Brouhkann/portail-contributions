@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft } from 'lucide-react'
 
 const QUICK_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000]
 
@@ -10,6 +10,24 @@ const METHODS = [
   { id: 'mtn',    name: 'MTN Mobile Money', emoji: '📱', bg: '#fefce8', border: '#fde047', text: '#854d0e' },
   { id: 'orange', name: 'Orange Money',     emoji: '🍊', bg: '#fff7ed', border: '#fdba74', text: '#c2410c' },
 ]
+
+function triggerPayment(methodId, amount) {
+  const amt = parseInt(amount, 10)
+  const links = {
+    wave:   `https://pay.wave.com/m/M_ci_w0uiv5NMBefY/c/ci/?amount=${amt}`,
+    mtn:    `tel:*133%23`,
+    orange: `tel:%23144*11*0749269369%23`,
+  }
+  const href = links[methodId]
+  if (!href) return
+  const a = document.createElement('a')
+  a.href = href
+  if (methodId === 'wave') a.target = '_blank'
+  a.rel = 'noopener noreferrer'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+}
 
 export default function StepAmount({ formData, update, go }) {
   const minAmount = parseInt(process.env.NEXT_PUBLIC_MIN_AMOUNT || '100', 10)
@@ -26,13 +44,15 @@ export default function StepAmount({ formData, update, go }) {
     const s = val.toString(); setAmount(s); update({ amount: s }); setError('')
   }
 
-  function handleNext() {
+  function handleSelectMethod(methodId) {
     const num = parseInt(amount, 10)
-    if (!amount || isNaN(num)) { setError('Veuillez entrer un montant.'); return }
-    if (num < minAmount)        { setError(`Minimum : ${minAmount.toLocaleString('fr-FR')} FCFA`); return }
-    if (!method)                { setError('Veuillez choisir un moyen de paiement.'); return }
-    update({ amount, paymentMethod: method })
-    go('paying')
+    if (!amount || isNaN(num)) { setError('Veuillez d\'abord entrer un montant.'); return }
+    if (num < minAmount)       { setError(`Minimum : ${minAmount.toLocaleString('fr-FR')} FCFA`); return }
+    setError('')
+    setMethod(methodId)
+    update({ amount, paymentMethod: methodId })
+    triggerPayment(methodId, amount)
+    go('confirm')
   }
 
   const numVal      = parseInt(amount, 10)
@@ -110,50 +130,31 @@ export default function StepAmount({ formData, update, go }) {
           Moyen de paiement
         </p>
         <div className="grid grid-cols-3 gap-2.5">
-          {METHODS.map(m => {
-            const sel = method === m.id
-            return (
-              <button key={m.id}
-                onClick={() => { setMethod(m.id); update({ paymentMethod: m.id }); setError('') }}
-                className="flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all active:scale-95"
-                style={{
-                  background: sel ? m.bg : '#f8fffe',
-                  border:     sel ? `2px solid ${m.border}` : '1.5px solid #d1e9e4',
-                  boxShadow:  sel ? `0 4px 12px ${m.border}55` : 'none',
-                }}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                  style={{ background: '#ffffff', border: `1.5px solid ${sel ? m.border : '#d1e9e4'}` }}>
-                  {m.emoji}
-                </div>
-                <span className="font-bold text-xs text-center leading-tight" style={{ color: sel ? m.text : '#0a2d28' }}>
-                  {m.name}
-                </span>
-                {sel && (
-                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-white text-xs"
-                    style={{ background: m.text }}>✓</span>
-                )}
-              </button>
-            )
-          })}
+          {METHODS.map(m => (
+            <button key={m.id}
+              onClick={() => handleSelectMethod(m.id)}
+              className="flex flex-col items-center gap-2 py-4 px-2 rounded-xl transition-all active:scale-95"
+              style={{ background: m.bg, border: `1.5px solid ${m.border}` }}>
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                style={{ background: '#ffffff', border: `1.5px solid ${m.border}` }}>
+                {m.emoji}
+              </div>
+              <span className="font-bold text-xs text-center leading-tight" style={{ color: m.text }}>
+                {m.name}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
       {/* Erreur */}
       {error && (
-        <p className="text-red-500 text-sm mb-3 text-center">{error}</p>
+        <p className="text-red-500 text-sm mt-1 text-center">{error}</p>
       )}
 
-      {/* Bouton valider */}
-      <button onClick={handleNext}
-        disabled={!amount || !method}
-        className={`w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all ${
-          amount && method ? 'btn-gold shadow-md' : 'cursor-not-allowed'
-        }`}
-        style={!amount || !method
-          ? { background: '#e8f5f3', color: '#9dc4bc', border: '1.5px solid #d1e9e4' }
-          : {}}>
-        Procéder au paiement <ChevronRight className="w-5 h-5" />
-      </button>
+      <p className="text-center text-xs mt-3" style={{ color: '#9dc4bc' }}>
+        Appuyez sur votre opérateur pour lancer le paiement
+      </p>
     </div>
   )
 }

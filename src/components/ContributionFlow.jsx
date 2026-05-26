@@ -12,7 +12,7 @@ import StepConfirm from './steps/StepConfirm'
 import StepUpload from './steps/StepUpload'
 import StepSuccess from './steps/StepSuccess'
 
-const ORDERED_STEPS = ['welcome', 'type', 'amount', 'paying', 'confirm', 'upload', 'success']
+const ORDERED_STEPS = ['welcome', 'type', 'amount', 'confirm', 'upload', 'success']
 const initialForm = {
   name: '', phone: '', rememberMe: true, isAnonymous: false,
   contributionType: '', contributionDetail: '', amount: '', paymentMethod: '',
