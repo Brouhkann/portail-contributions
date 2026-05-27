@@ -139,6 +139,13 @@ export default function StepConfirm({ formData, go, submit, submitting }) {
           ? <><Loader2 className="w-5 h-5 animate-spin" /> Enregistrement…</>
           : <><CheckCircle2 className="w-5 h-5" /> Je confirme avoir payé</>}
       </button>
+
+      {/* Bouton annuler */}
+      <button onClick={() => go('type')} disabled={isLoading}
+        className="w-full mt-3 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40"
+        style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', color: '#dc2626' }}>
+        Annuler
+      </button>
     </div>
   )
 }
