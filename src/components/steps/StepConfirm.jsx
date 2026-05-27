@@ -142,8 +142,10 @@ export default function StepConfirm({ formData, go, submit, submitting }) {
 
       {/* Bouton annuler */}
       <button onClick={() => go('type')} disabled={isLoading}
-        className="w-full mt-3 py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40"
-        style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', color: '#dc2626' }}>
+        className="w-full mt-3 py-3 rounded-xl text-sm font-medium tracking-wide transition-all disabled:opacity-40"
+        style={{ background: 'transparent', border: '1px solid #d1d5db', color: '#9ca3af', letterSpacing: '0.04em' }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#ef4444'; e.currentTarget.style.color = '#ef4444' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = '#d1d5db'; e.currentTarget.style.color = '#9ca3af' }}>
         Annuler
       </button>
     </div>
