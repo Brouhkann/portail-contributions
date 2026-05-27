@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { LogOut, Download, RefreshCw, Search, BarChart2, List, FileSpreadsheet, ExternalLink, TrendingUp, Users, Banknote, Calendar } from 'lucide-react'
+import { LogOut, Download, RefreshCw, Search, BarChart2, List, FileSpreadsheet, ExternalLink, TrendingUp, Users, Banknote } from 'lucide-react'
 
 const METHOD_LABELS = { wave: 'Wave', mtn: 'MTN', orange: 'Orange' }
 const METHOD_COLORS = {
@@ -130,20 +130,39 @@ export default function AdminDashboard({ onLogout }) {
 
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-5">
         {/* Cartes stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { icon: <Banknote className="w-5 h-5" />, label: 'Total collecté', value: `${totalAmount.toLocaleString('fr-FR')} FCFA`, accent: '#c9a227' },
-            { icon: <Users className="w-5 h-5" />, label: 'Contributions', value: contributions.length.toString(), accent: '#60a5fa' },
-            { icon: <TrendingUp className="w-5 h-5" />, label: 'Wave', value: `${(byMethod.wave?.total || 0).toLocaleString('fr-FR')} FCFA`, accent: '#38bdf8' },
-            { icon: <Calendar className="w-5 h-5" />, label: 'MTN + Orange', value: `${((byMethod.mtn?.total || 0) + (byMethod.orange?.total || 0)).toLocaleString('fr-FR')} FCFA`, accent: '#fb923c' },
-          ].map((s, i) => (
-            <div key={i} className="rounded-xl p-4"
-              style={{ background: 'rgba(15,61,55,0.6)', border: `1px solid ${s.accent}22` }}>
-              <div className="mb-2" style={{ color: s.accent + 'aa' }}>{s.icon}</div>
-              <p className="text-gold-800 text-xs mb-0.5">{s.label}</p>
-              <p className="font-bold text-sm text-gold-300">{s.value}</p>
-            </div>
-          ))}
+        <div className="space-y-3">
+          {/* Ligne 1 : totaux globaux */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { icon: <Banknote className="w-5 h-5" />, label: 'Total collecté', value: `${totalAmount.toLocaleString('fr-FR')} FCFA`, accent: '#c9a227' },
+              { icon: <Users className="w-5 h-5" />,   label: 'Contributions',  value: `${contributions.length} déclaration${contributions.length > 1 ? 's' : ''}`, accent: '#60a5fa' },
+            ].map((s, i) => (
+              <div key={i} className="rounded-xl p-4"
+                style={{ background: 'rgba(15,61,55,0.6)', border: `1px solid ${s.accent}22` }}>
+                <div className="mb-2" style={{ color: s.accent + 'aa' }}>{s.icon}</div>
+                <p className="text-gold-800 text-xs mb-0.5">{s.label}</p>
+                <p className="font-bold text-sm text-gold-300">{s.value}</p>
+              </div>
+            ))}
+          </div>
+          {/* Ligne 2 : détail par opérateur */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: 'Wave',   total: byMethod.wave?.total   || 0, count: byMethod.wave?.count   || 0, accent: '#38bdf8', logo: '/logos/wave.png' },
+              { label: 'MTN',    total: byMethod.mtn?.total    || 0, count: byMethod.mtn?.count    || 0, accent: '#fde047', logo: '/logos/mtn.png'  },
+              { label: 'Orange', total: byMethod.orange?.total || 0, count: byMethod.orange?.count || 0, accent: '#fb923c', logo: '/logos/orange.png' },
+            ].map((s, i) => (
+              <div key={i} className="rounded-xl p-3"
+                style={{ background: 'rgba(15,61,55,0.6)', border: `1px solid ${s.accent}22` }}>
+                <div className="flex items-center gap-2 mb-2">
+                  <img src={s.logo} alt={s.label} className="w-6 h-6 rounded object-contain bg-white p-0.5" />
+                  <span className="text-xs font-semibold" style={{ color: s.accent }}>{s.label}</span>
+                </div>
+                <p className="font-bold text-sm text-gold-300">{s.total.toLocaleString('fr-FR')} <span className="text-gold-800 font-normal text-xs">FCFA</span></p>
+                <p className="text-gold-800 text-xs mt-0.5">{s.count} paiement{s.count > 1 ? 's' : ''}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Onglets */}
