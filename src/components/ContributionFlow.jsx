@@ -120,9 +120,9 @@ export default function ContributionFlow() {
       <div className="w-full px-4 py-4 mb-6" style={{ background: 'linear-gradient(135deg, #0a2d28, #155049)' }}>
         <div className="max-w-md mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(201,162,39,0.15)', border: '1.5px solid rgba(201,162,39,0.5)' }}>
-              <FlameIcon size={20} />
+            <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
+              style={{ border: '1.5px solid rgba(201,162,39,0.5)' }}>
+              <img src="/logos/vh.png" alt="Vases d'Honneur" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="font-cinzel text-gold-400 font-semibold text-sm tracking-[0.12em] uppercase leading-tight"

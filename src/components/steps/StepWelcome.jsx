@@ -20,7 +20,7 @@ export default function StepWelcome({ formData, update, handleIdentified, isRetu
     return (
       <div className="p-7">
         <div className="text-center mb-7">
-          <div className="text-4xl mb-3">🕯️</div>
+          <img src="/logos/vh.png" alt="Vases d'Honneur" className="w-20 h-20 mx-auto mb-3 object-contain" />
           <h1 className="font-cinzel font-semibold text-xl tracking-widest uppercase" style={{ color: '#0a2d28' }}>
             Contributions
           </h1>
