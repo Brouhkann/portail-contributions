@@ -96,7 +96,7 @@ export default function AdminDashboard({ onLogout }) {
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: 'rgba(201,162,39,0.1)', border: '1px solid rgba(201,162,39,0.3)' }}>
-              <span className="text-base">🕯️</span>
+              <img src="/logos/vh.png" alt="VH" className="w-6 h-6 object-contain" />
             </div>
             <div>
               <h1 className="font-cinzel text-gold-400 text-sm font-semibold tracking-widest uppercase">Administration</h1>
